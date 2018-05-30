@@ -3,7 +3,7 @@
 
 int main()
 {
-	int success = cart_init("C:\\dev\\nesberry\\nestest.nes");
+	int success = cart_init("C:\\dev\\nesberry-support\\nestest.nes");
 	mmu_init();
 	uint8 check = mmu_read(0x8000);
 	mmu_write(0x0010, 0x69);
