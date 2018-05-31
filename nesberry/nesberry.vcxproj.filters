@@ -51,6 +51,12 @@
     <ClInclude Include="registers.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
+    <ClInclude Include="instructions.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="operand.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cartridge.c">
@@ -69,6 +75,12 @@
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
     <ClCompile Include="registers.c">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions.c">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="operand.c">
       <Filter>Source Files\cpu</Filter>
     </ClCompile>
   </ItemGroup>

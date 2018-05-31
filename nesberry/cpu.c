@@ -19,9 +19,11 @@ void cpu_init()
 uint8 cpu_step()
 {
 	uint8 opcode = mmu_read(PC);
+	PC += 1;
 	switch (opcode)
 	{
-		case 0x4c: return instruction_jmp();
+		case 0x4C: return instruction_jmp_absolute();
+		case 0x6C: return instruction_jmp_indirect();
 	}
 	return 0;
 }

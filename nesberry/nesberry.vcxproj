@@ -117,16 +117,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="operand.h" />
     <ClInclude Include="cartridge.h" />
     <ClInclude Include="cpu.h" />
+    <ClInclude Include="instructions.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="registers.h" />
     <ClInclude Include="win_io.h" />
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="operand.c" />
     <ClCompile Include="cartridge.c" />
     <ClCompile Include="cpu.c" />
+    <ClCompile Include="instructions.c" />
     <ClCompile Include="mmu.c" />
     <ClCompile Include="registers.c" />
     <ClCompile Include="win_io.c" />
