@@ -1,6 +1,27 @@
-#include "cpu.h"
+#define PC_START_OVERRIDE 0xC000
 
-uint8 step()
+#include "cpu.h"
+#include "registers.h"
+#include "mmu.h"
+#include "instructions.h"
+
+void cpu_init()
 {
+	mmu_init();
+	registers_init();
+	#ifdef PC_START_OVERRIDE
+		PC = PC_START_OVERRIDE;
+	#else
+		PC = (mmu_read(0xFFFD) << 8) | mmu_read(0xFFFC);
+	#endif
+}
+
+uint8 cpu_step()
+{
+	uint8 opcode = mmu_read(PC);
+	switch (opcode)
+	{
+		case 0x4c: return instruction_jmp();
+	}
 	return 0;
 }

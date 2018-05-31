@@ -120,6 +120,7 @@
     <ClInclude Include="cartridge.h" />
     <ClInclude Include="cpu.h" />
     <ClInclude Include="mmu.h" />
+    <ClInclude Include="registers.h" />
     <ClInclude Include="win_io.h" />
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
@@ -127,6 +128,7 @@
     <ClCompile Include="cartridge.c" />
     <ClCompile Include="cpu.c" />
     <ClCompile Include="mmu.c" />
+    <ClCompile Include="registers.c" />
     <ClCompile Include="win_io.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>

@@ -2,5 +2,4 @@
 
 #include "typedefs.h"
 
-void cpu_init();
-uint8 cpu_step();
+uint8 instruction_jmp();

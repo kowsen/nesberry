@@ -13,11 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Windows">
+    <Filter Include="Source Files\cpu">
+      <UniqueIdentifier>{57bfd4e0-6b08-4e76-9e3e-186d7a19972f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform">
+      <UniqueIdentifier>{131bbf2e-d727-43af-8c0b-07eb15c85570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Platform\Windows">
+      <UniqueIdentifier>{6a2555dc-7e85-4f1b-9dae-0142cd4b3901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform">
+      <UniqueIdentifier>{650206e3-f57f-412e-a54f-2d0e6f19c061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Platform\Windows">
       <UniqueIdentifier>{35c3e874-d001-4073-b552-518e3de5ae29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Windows">
-      <UniqueIdentifier>{6a2555dc-7e85-4f1b-9dae-0142cd4b3901}</UniqueIdentifier>
+    <Filter Include="Header Files\cpu">
+      <UniqueIdentifier>{0b786d5c-bfd4-4011-831f-580e282d647d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,13 +40,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="win_io.h">
-      <Filter>Header Files\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="mmu.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="cpu.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="mmu.h">
+      <Filter>Header Files\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="registers.h">
+      <Filter>Header Files\cpu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -45,13 +60,16 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="win_io.c">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="mmu.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="cpu.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="mmu.c">
+      <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="registers.c">
+      <Filter>Source Files\cpu</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
