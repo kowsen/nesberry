@@ -52,7 +52,7 @@ uint16 operand_address_relative()
 uint16 operand_address_indirect()
 {
 	uint16 address = operand_address_absolute();
-	return mmu_read(address) + (mmu_read(address + 1) << 8);
+	return mmu_read(address) + (mmu_read((address & 0xFF00) + ((address + 1) & 0xFF)) << 8);
 }
 
 uint16 operand_address_indirect_x()
