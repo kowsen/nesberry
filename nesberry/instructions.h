@@ -2,5 +2,6 @@
 
 #include "typedefs.h"
 
-uint8 instruction_jmp_absolute();
-uint8 instruction_jmp_indirect();
+void instruction_adc(uint8 value);
+
+void instruction_jmp(uint16 address);

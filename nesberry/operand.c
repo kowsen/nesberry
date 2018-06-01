@@ -30,10 +30,7 @@ uint16 operand_address_absolute()
 uint16 operand_address_absolute_x(bool* is_extra_cycle)
 {
 	uint16 address = operand() + X;
-	if (address > 0xFF && is_extra_cycle != NULL)
-	{
-		*is_extra_cycle = TRUE;
-	}
+	is_extra_cycle = address > 0xFF;
 	address += (operand() << 8);
 	return address;
 }
@@ -41,10 +38,7 @@ uint16 operand_address_absolute_x(bool* is_extra_cycle)
 uint16 operand_address_absolute_y(bool* is_extra_cycle)
 {
 	uint16 address = operand() + Y;
-	if (address > 0xFF && is_extra_cycle != NULL)
-	{
-		*is_extra_cycle = TRUE;
-	}
+	is_extra_cycle = address > 0xFF;
 	address += (operand() << 8);
 	return address;
 }
@@ -72,10 +66,57 @@ uint16 operand_address_indirect_y(bool* is_extra_cycle)
 {
 	uint8 operand_value = operand();
 	uint16 address = mmu_read(operand_value) + Y;
-	if (address > 0xFF && is_extra_cycle != NULL)
-	{
-		*is_extra_cycle = TRUE;
-	}
+	is_extra_cycle = address > 0xFF;
 	address += mmu_read((operand_value + 1) % 0x100) << 8;
 	return address;
+}
+
+uint8 operand_value_zero_page()
+{
+	return mmu_read(operand_address_zero_page());
+}
+
+uint8 operand_value_zero_page_x()
+{
+	return mmu_read(operand_address_zero_page_x());
+}
+
+uint8 operand_value_zero_page_y()
+{
+	return mmu_read(operand_address_zero_page_y());
+}
+
+uint8 operand_value_absolute()
+{
+	return mmu_read(operand_address_absolute());
+}
+
+uint8 operand_value_absolute_x(bool* is_extra_cycle)
+{
+	return mmu_read(operand_address_absolute_x(is_extra_cycle));
+}
+
+uint8 operand_value_absolute_y(bool* is_extra_cycle)
+{
+	return mmu_read(operand_address_absolute_y(is_extra_cycle));
+}
+
+uint8 operand_value_relative()
+{
+	return mmu_read(operand_address_relative());
+}
+
+uint8 operand_value_indirect()
+{
+	return mmu_read(operand_address_indirect());
+}
+
+uint8 operand_value_indirect_x()
+{
+	return mmu_read(operand_address_indirect_x());
+}
+
+uint8 operand_value_indirect_y(bool* is_extra_cycle)
+{
+	return mmu_read(operand_address_indirect_y(is_extra_cycle));
 }

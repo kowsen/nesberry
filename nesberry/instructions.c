@@ -3,14 +3,24 @@
 #include "mmu.h"
 #include "operand.h"
 
-uint8 instruction_jmp_absolute()
+#define SIGN_MASK 0b10000000
+
+void update_zn_flags()
 {
-	PC = operand_address_absolute();
-	return 0x03;
+	P.zero = A == 0;
+	P.negative = (A & SIGN_MASK) != 0;
 }
 
-uint8 instruction_jmp_indirect()
+void instruction_adc(uint8 value)
 {
-	PC = operand_address_indirect();
-	return 0x05;
+	uint8 oldA = A;
+	A += value;
+	P.carry = A < oldA;
+	P.overflow = ((oldA & SIGN_MASK) == (value & SIGN_MASK)) && ((oldA & SIGN_MASK) != (A & SIGN_MASK));
+	update_zn_flags();
+}
+
+void instruction_jmp(uint16 address)
+{
+	PC = address;
 }
