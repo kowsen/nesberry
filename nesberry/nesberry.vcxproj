@@ -117,6 +117,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="debug.h" />
     <ClInclude Include="operand.h" />
     <ClInclude Include="cartridge.h" />
     <ClInclude Include="cpu.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="debug.c" />
     <ClCompile Include="operand.c" />
     <ClCompile Include="cartridge.c" />
     <ClCompile Include="cpu.c" />

@@ -58,7 +58,7 @@ uint16 operand_address_indirect()
 uint16 operand_address_indirect_x()
 {
 	uint8 operand_value = operand();
-	uint16 address = mmu_read((operand_value + X) % 0x100) + mmu_read(((operand_value + X + 1) % 0x100) << 8);
+	uint16 address = mmu_read((operand_value + X) % 0x100) + (mmu_read((operand_value + X + 1) % 0x100) << 8);
 	return address;
 }
 

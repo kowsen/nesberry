@@ -6,6 +6,8 @@
 #include "instructions.h"
 #include "operand.h"
 
+#include "debug.h"
+
 void cpu_init()
 {
 	mmu_init();
@@ -31,6 +33,7 @@ uint8 extra_cycle;
 uint8 cpu_step()
 {
 	uint8 opcode = mmu_read(PC);
+	print_status(opcode);
 	PC += 1;
 	switch (opcode)
 	{
@@ -38,13 +41,33 @@ uint8 cpu_step()
 			instruction_brk();
 			return 0x07;
 
+		case 0x01:
+			instruction_ora(operand_value_indirect_x());
+			return 0x06;
+
+		case 0x05:
+			instruction_ora(operand_value_zero_page());
+			return 0x03;
+
 		case 0x06:
 			instruction_asl(operand_address_zero_page());
 			return 0x05;
 
+		case 0x08:
+			instruction_php();
+			return 0x03;
+
+		case 0x09:
+			instruction_ora(operand());
+			return 0x02;
+
 		case 0x0A:
 			instruction_asl_accumulator();
 			return 0x02;
+
+		case 0x0D:
+			instruction_ora(operand_value_absolute());
+			return 0x04;
 
 		case 0x0E:
 			instruction_asl(operand_address_absolute());
@@ -53,6 +76,14 @@ uint8 cpu_step()
 		case 0x10:
 			return 0x02 + instruction_bpl(operand());
 
+		case 0x11:
+			instruction_ora(operand_value_indirect_y(&extra_cycle));
+			return 0x05 + extra_cycle;
+
+		case 0x15:
+			instruction_ora(operand_value_zero_page_x());
+			return 0x04;
+
 		case 0x16:
 			instruction_asl(operand_address_zero_page_x());
 			return 0x06;
@@ -60,6 +91,14 @@ uint8 cpu_step()
 		case 0x18:
 			instruction_clc();
 			return 0x02;
+
+		case 0x19:
+			instruction_ora(operand_value_absolute_y(&extra_cycle));
+			return 0x04 + extra_cycle;
+
+		case 0x1D:
+			instruction_ora(operand_value_absolute_x(&extra_cycle));
+			return 0x04 + extra_cycle;
 
 		case 0x1E:
 			instruction_asl(operand_address_absolute_x(&extra_cycle));
@@ -81,8 +120,20 @@ uint8 cpu_step()
 			instruction_and(operand_value_zero_page());
 			return 0x03;
 
+		case 0x26:
+			instruction_rol(operand_address_zero_page());
+			return 0x05;
+
+		case 0x28:
+			instruction_plp();
+			return 0x04;
+
 		case 0x29:
 			instruction_and(operand());
+			return 0x02;
+
+		case 0x2A:
+			instruction_rol_accumulator();
 			return 0x02;
 
 		case 0x2C:
@@ -92,6 +143,10 @@ uint8 cpu_step()
 		case 0x2D:
 			instruction_and(operand_value_absolute());
 			return 0x04;
+
+		case 0x2E:
+			instruction_rol(operand_address_absolute());
+			return 0x06;
 
 		case 0x30:
 			return 0x02 + instruction_bmi(operand());
@@ -104,6 +159,14 @@ uint8 cpu_step()
 			instruction_and(operand_value_zero_page_x());
 			return 0x04;
 
+		case 0x36:
+			instruction_rol(operand_address_zero_page_x());
+			return 0x06;
+
+		case 0x38:
+			instruction_sec();
+			return 0x02;
+
 		case 0x39:
 			instruction_and(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
@@ -111,6 +174,14 @@ uint8 cpu_step()
 		case 0x3D:
 			instruction_and(operand_value_absolute_x(&extra_cycle));
 			return 0x04 + extra_cycle;
+
+		case 0x3E:
+			instruction_rol(operand_address_absolute_x(&extra_cycle));
+			return 0x07;
+
+		case 0x40:
+			instruction_rti();
+			return 0x06;
 			
 		case 0x41:
 			instruction_eor(operand_value_indirect_x());
@@ -120,8 +191,20 @@ uint8 cpu_step()
 			instruction_eor(operand_value_zero_page());
 			return 0x03;
 
+		case 0x46:
+			instruction_lsr(operand_address_zero_page());
+			return 0x05;
+
+		case 0x48:
+			instruction_pha();
+			return 0x03;
+
 		case 0x49:
 			instruction_eor(operand());
+			return 0x02;
+
+		case 0x4A:
+			instruction_lsr_accumulator();
 			return 0x02;
 
 		case 0x4C:
@@ -129,31 +212,47 @@ uint8 cpu_step()
 			return 0x03;
 
 		case 0x4D:
-			instruction_eor(operand_address_absolute());
+			instruction_eor(operand_value_absolute());
 			return 0x04;
+
+		case 0x4E:
+			instruction_lsr(operand_address_absolute());
+			return 0x06;
 
 		case 0x50:
 			return 0x02 + instruction_bvc(operand());
 
 		case 0x51:
-			instruction_eor(operand_address_indirect_y(&extra_cycle));
+			instruction_eor(operand_value_indirect_y(&extra_cycle));
 			return 0x05 + extra_cycle;
 
 		case 0x55:
 			instruction_eor(operand_value_zero_page_x());
 			return 0x04;
 
+		case 0x56:
+			instruction_lsr(operand_address_zero_page_x());
+			return 0x06;
+
 		case 0x58:
 			instruction_cli();
 			return 0x02;
 
 		case 0x59:
-			instruction_eor(operand_address_absolute_y(&extra_cycle));
+			instruction_eor(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
 
 		case 0x5D:
-			instruction_eor(operand_address_absolute_x(&extra_cycle));
+			instruction_eor(operand_value_absolute_x(&extra_cycle));
 			return 0x04 + extra_cycle;
+
+		case 0x5E:
+			instruction_lsr(operand_address_absolute_x(&extra_cycle));
+			return 0x07;
+
+		case 0x60:
+			instruction_rts();
+			return 0x06;
 
 		case 0x61:
 			instruction_adc(operand_value_indirect_x());
@@ -163,8 +262,20 @@ uint8 cpu_step()
 			instruction_adc(operand_value_zero_page());
 			return 0x03;
 
+		case 0x66:
+			instruction_ror(operand_address_zero_page());
+			return 0x05;
+
+		case 0x68:
+			instruction_pla();
+			return 0x04;
+
 		case 0x69:
 			instruction_adc(operand());
+			return 0x02;
+
+		case 0x6A:
+			instruction_ror_accumulator();
 			return 0x02;
 
 		case 0x6C:
@@ -174,6 +285,10 @@ uint8 cpu_step()
 		case 0x6D:
 			instruction_adc(operand_value_absolute());
 			return 0x04;
+
+		case 0x6E:
+			instruction_ror(operand_address_absolute());
+			return 0x06;
 
 		case 0x70:
 			return 0x02 + instruction_bvs(operand());
@@ -186,6 +301,14 @@ uint8 cpu_step()
 			instruction_adc(operand_value_zero_page_x());
 			return 0x04;
 
+		case 0x76:
+			instruction_ror(operand_address_zero_page_x());
+			return 0x06;
+
+		case 0x78:
+			instruction_sei();
+			return 0x02;
+
 		case 0x79:
 			instruction_adc(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
@@ -194,35 +317,146 @@ uint8 cpu_step()
 			instruction_adc(operand_value_absolute_x(&extra_cycle));
 			return 0x04 + extra_cycle;
 
+		case 0x7E:
+			instruction_ror(operand_address_absolute_x(&extra_cycle));
+			return 0x07;
+
+		case 0x81:
+			instruction_sta(operand_address_indirect_x());
+			return 0x06;
+
+		case 0x84:
+			instruction_sty(operand_address_zero_page());
+			return 0x03;
+
+		case 0x85:
+			instruction_sta(operand_address_zero_page());
+			return 0x03;
+
+		case 0x86:
+			instruction_stx(operand_address_zero_page());
+			return 0x03;
+
 		case 0x88:
 			instruction_dey();
+			return 0x02;
+
+		case 0x8A:
+			instruction_txa();
+			return 0x02;
+
+		case 0x8C:
+			instruction_sty(operand_address_absolute());
+			return 0x04;
+
+		case 0x8D:
+			instruction_sta(operand_address_absolute());
+			return 0x04;
+
+		case 0x8E:
+			instruction_stx(operand_address_absolute());
+			return 0x04;
+
+		case 0x90:
+			return 0x02 + instruction_bcc(operand());
+
+		case 0x91:
+			instruction_sta(operand_address_indirect_y(&extra_cycle));
+			return 0x06;
+
+		case 0x94:
+			instruction_sty(operand_address_zero_page_x());
+			return 0x04;
+
+		case 0x95:
+			instruction_sta(operand_address_zero_page_x());
+			return 0x04;
+
+		case 0x96:
+			instruction_stx(operand_address_zero_page_y());
+			return 0x04;
+
+		case 0x98:
+			instruction_tya();
+			return 0x02;
+
+		case 0x99:
+			instruction_sta(operand_address_absolute_y(&extra_cycle));
+			return 0x05;
+
+		case 0x9A:
+			instruction_txs();
+			return 0x02;
+
+		case 0x9D:
+			instruction_sta(operand_address_absolute_x(&extra_cycle));
+			return 0x05;
+
+		case 0xA0:
+			instruction_ldy(operand());
 			return 0x02;
 
 		case 0xA1:
 			instruction_lda(operand_value_indirect_x());
 			return 0x06;
 
+		case 0xA2:
+			instruction_ldx(operand());
+			return 0x02;
+
+		case 0xA4:
+			instruction_ldy(operand_value_zero_page());
+			return 0x03;
+
 		case 0xA5:
 			instruction_lda(operand_value_zero_page());
 			return 0x03;
+
+		case 0xA6:
+			instruction_ldx(operand_value_zero_page());
+			return 0x03;
+
+		case 0xA8:
+			instruction_tay();
+			return 0x02;
 
 		case 0xA9:
 			instruction_lda(operand());
 			return 0x02;
 
+		case 0xAA:
+			instruction_tax();
+			return 0x02;
+
+		case 0xAC:
+			instruction_ldy(operand_value_absolute());
+			return 0x04;
+
 		case 0xAD:
-			instruction_lda(operand_address_absolute());
+			instruction_lda(operand_value_absolute());
+			return 0x04;
+
+		case 0xAE:
+			instruction_ldx(operand_value_absolute());
 			return 0x04;
 
 		case 0xB0:
-			return 0x02 + instruction_bcc(operand());
+			return 0x02 + instruction_bcs(operand());
 
 		case 0xB1:
-			instruction_lda(operand_address_indirect_y(&extra_cycle));
+			instruction_lda(operand_value_indirect_y(&extra_cycle));
 			return 0x05 + extra_cycle;
+
+		case 0xB4:
+			instruction_ldy(operand_value_zero_page_x());
+			return 0x04;
 
 		case 0xB5:
 			instruction_lda(operand_value_zero_page_x());
+			return 0x04;
+
+		case 0xB6:
+			instruction_ldx(operand_value_zero_page_y());
 			return 0x04;
 
 		case 0xB8:
@@ -233,8 +467,20 @@ uint8 cpu_step()
 			instruction_lda(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
 
+		case 0xBA:
+			instruction_tsx();
+			return 0x02;
+
+		case 0xBC:
+			instruction_ldy(operand_value_absolute_x(&extra_cycle));
+			return 0x04 + extra_cycle;
+
 		case 0xBD:
 			instruction_lda(operand_value_absolute_x(&extra_cycle));
+			return 0x04 + extra_cycle;
+
+		case 0xBE:
+			instruction_ldx(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
 
 		case 0xC0:
@@ -296,6 +542,10 @@ uint8 cpu_step()
 			instruction_dec(operand_address_zero_page_x());
 			return 0x06;
 
+		case 0xD8:
+			instruction_cld();
+			return 0x02;
+
 		case 0xD9:
 			instruction_cmp(operand_value_absolute_y(&extra_cycle));
 			return 0x04 + extra_cycle;
@@ -312,8 +562,16 @@ uint8 cpu_step()
 			instruction_cpx(operand());
 			return 0x02;
 
+		case 0xE1:
+			instruction_sbc(operand_value_indirect_x());
+			return 0x06;
+
 		case 0xE4:
 			instruction_cpx(operand_value_zero_page());
+			return 0x03;
+
+		case 0xE5:
+			instruction_sbc(operand_value_zero_page());
 			return 0x03;
 
 		case 0xE6:
@@ -324,8 +582,20 @@ uint8 cpu_step()
 			instruction_inx();
 			return 0x02;
 
+		case 0xE9:
+			instruction_sbc(operand());
+			return 0x02;
+
+		case 0xEA:
+			instruction_nop();
+			return 0x02;
+
 		case 0xEC:
 			instruction_cpx(operand_value_absolute());
+			return 0x04;
+
+		case 0xED:
+			instruction_sbc(operand_value_absolute());
 			return 0x04;
 
 		case 0xEE:
@@ -335,9 +605,29 @@ uint8 cpu_step()
 		case 0xF0:
 			return 0x02 + instruction_beq(operand());
 
+		case 0xF1:
+			instruction_sbc(operand_value_indirect_y(&extra_cycle));
+			return 0x05 + extra_cycle;
+
+		case 0xF5:
+			instruction_sbc(operand_value_zero_page_x());
+			return 0x04;
+
 		case 0xF6:
 			instruction_inc(operand_address_zero_page_x());
 			return 0x06;
+
+		case 0xF8:
+			instruction_sed();
+			return 0x02;
+
+		case 0xF9:
+			instruction_sbc(operand_value_absolute_y(&extra_cycle));
+			return 0x04 + extra_cycle;
+
+		case 0xFD:
+			instruction_sbc(operand_value_absolute_x(&extra_cycle));
+			return 0x04 + extra_cycle;
 
 		case 0xFE:
 			instruction_inc(operand_address_absolute_x(&extra_cycle));

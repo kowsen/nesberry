@@ -6,6 +6,7 @@ struct Status {
 	bool carry;
 	bool zero;
 	bool interrupt;
+	bool decimal;
 	bool overflow;
 	bool negative;
 };

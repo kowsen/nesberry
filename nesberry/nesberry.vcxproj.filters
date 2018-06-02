@@ -57,6 +57,9 @@
     <ClInclude Include="operand.h">
       <Filter>Header Files\cpu</Filter>
     </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Header Files\Platform\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cartridge.c">
@@ -82,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="operand.c">
       <Filter>Source Files\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.c">
+      <Filter>Source Files\Platform\Windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,8 +15,8 @@ void update_zn_flags(uint8 value)
 void instruction_adc(uint8 value)
 {
 	uint8 oldA = A;
-	A += value;
-	P.carry = A < oldA;
+	A = A + value + P.carry;
+	P.carry = A < oldA || (A == oldA && value == 0xFF);
 	P.overflow = ((oldA & SIGN_MASK) == (value & SIGN_MASK)) && ((oldA & SIGN_MASK) != (A & SIGN_MASK));
 	update_zn_flags(A);
 }
@@ -33,16 +33,16 @@ void instruction_asl(uint16 address)
 	P.carry = (value & SIGN_MASK) != 0;
 	value = value << 1;
 	mmu_write(address, value);
-	P.negative = (value & SIGN_MASK) != 0;
-	P.zero = A == 0;
+	//P.negative = (value & SIGN_MASK) != 0;
+	//P.zero = A == 0;
+	update_zn_flags(value);
 }
 
 void instruction_asl_accumulator()
 {
 	P.carry = (A & SIGN_MASK) != 0;
 	A = A << 1;
-	P.negative = (A & SIGN_MASK) != 0;
-	P.zero = A == 0;
+	update_zn_flags(A);
 }
 
 uint8 branch_shared(int8 displacement)
@@ -59,6 +59,15 @@ uint8 branch_shared(int8 displacement)
 uint8 instruction_bcc(int8 displacement)
 {
 	if (!P.carry)
+	{
+		return branch_shared(displacement);
+	}
+	return 0x00;
+}
+
+uint8 instruction_bcs(int8 displacement)
+{
+	if (P.carry)
 	{
 		return branch_shared(displacement);
 	}
@@ -116,8 +125,8 @@ void push(uint8 value)
 
 uint8 pull()
 {
-	uint8 value = mmu_read((uint16)0x0100 + S);
 	S += 1;
+	uint8 value = mmu_read((uint16)0x0100 + S);
 	return value;
 }
 
@@ -153,6 +162,11 @@ uint8 instruction_bvs(int8 displacement)
 void instruction_clc()
 {
 	P.carry = 0;
+}
+
+void instruction_cld()
+{
+	P.decimal = 0;
 }
 
 void instruction_cli()
@@ -247,5 +261,186 @@ void instruction_jsr(uint16 address)
 void instruction_lda(uint8 value)
 {
 	A = value;
+	update_zn_flags(A);
+}
+
+void instruction_ldx(uint8 value)
+{
+	X = value;
+	update_zn_flags(X);
+}
+
+void instruction_ldy(uint8 value)
+{
+	Y = value;
+	update_zn_flags(Y);
+}
+
+void instruction_lsr(uint16 address)
+{
+	uint8 value = mmu_read(address);
+	P.carry = (value & 0x01) != 0;
+	value = value >> 1;
+	mmu_write(address, value);
+	update_zn_flags(value);
+}
+
+void instruction_lsr_accumulator()
+{
+	P.carry = (A & 0x01) != 0;
+	A = A >> 1;
+	update_zn_flags(A);
+}
+
+void instruction_nop()
+{
+}
+
+void instruction_ora(uint8 value)
+{
+	A |= value;
+	update_zn_flags(A);
+}
+
+void instruction_pha()
+{
+	push(A);
+}
+
+void instruction_php()
+{
+	push(registers_get_status(TRUE));
+}
+
+void instruction_pla()
+{
+	A = pull();
+	update_zn_flags(A);
+}
+
+void instruction_plp()
+{
+	registers_set_status(pull());
+}
+
+void instruction_rol(uint16 address)
+{
+	uint8 value = mmu_read(address);
+	uint8 old_carry = P.carry;
+	P.carry = (value & SIGN_MASK) != 0;
+	value = (value << 1) + (old_carry ? 1 : 0);
+	mmu_write(address, value);
+	update_zn_flags(value);
+}
+
+void instruction_rol_accumulator()
+{
+	uint8 old_carry = P.carry;
+	P.carry = (A & SIGN_MASK) != 0;
+	A = (A << 1) + (old_carry != 0);
+	update_zn_flags(A);
+}
+
+void instruction_ror(uint16 address)
+{
+	uint8 value = mmu_read(address);
+	uint8 old_carry = P.carry;
+	P.carry = (value & 0x01) != 0;
+	value = (value >> 1) + (old_carry ? SIGN_MASK : 0);
+	mmu_write(address, value);
+	update_zn_flags(value);
+}
+
+void instruction_ror_accumulator()
+{
+	uint8 old_carry = P.carry;
+	P.carry = (A & 0x01) != 0;
+	A = (A >> 1) + (old_carry ? SIGN_MASK : 0);
+	update_zn_flags(A);
+}
+
+void instruction_rti()
+{
+	registers_set_status(pull());
+	PC = pull() + (pull() << 8);
+}
+
+void instruction_rts()
+{
+	PC = pull() + (pull() << 8);
+	PC += 1;
+}
+
+void instruction_sbc(uint8 value)
+{
+	uint8 oldA = A;
+	A = A - value - (P.carry ? 0 : 1);
+	P.carry = A < oldA || (A == oldA && value == 0);
+	P.overflow = ((value & SIGN_MASK) == (A & SIGN_MASK)) && ((oldA & SIGN_MASK) != (A & SIGN_MASK));
+	update_zn_flags(A);
+}
+
+void instruction_sec()
+{
+	P.carry = TRUE;
+}
+
+void instruction_sed()
+{
+	P.decimal = TRUE;
+}
+
+void instruction_sei()
+{
+	P.interrupt = TRUE;
+}
+
+void instruction_sta(uint16 address)
+{
+	mmu_write(address, A);
+}
+
+void instruction_stx(uint16 address)
+{
+	mmu_write(address, X);
+}
+
+void instruction_sty(uint16 address)
+{
+	mmu_write(address, Y);
+}
+
+void instruction_tax()
+{
+	X = A;
+	update_zn_flags(X);
+}
+
+void instruction_tay()
+{
+	Y = A;
+	update_zn_flags(Y);
+}
+
+void instruction_tsx()
+{
+	X = S;
+	update_zn_flags(X);
+}
+
+void instruction_txa()
+{
+	A = X;
+	update_zn_flags(A);
+}
+
+void instruction_txs()
+{
+	S = X;
+}
+
+void instruction_tya()
+{
+	A = Y;
 	update_zn_flags(A);
 }
