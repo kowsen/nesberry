@@ -444,3 +444,67 @@ void instruction_tya()
 	A = Y;
 	update_zn_flags(A);
 }
+
+void instruction_aac(uint8 value)
+{
+	A = A & value;
+	update_zn_flags(A);
+	P.carry = (A & SIGN_MASK) != 0;
+}
+
+void instruction_sax(uint16 address)
+{
+	uint8 value = A & X;
+	mmu_write(address, value);
+}
+
+void instruction_lax(uint8 value)
+{
+	A = value;
+	X = value;
+	update_zn_flags(A);
+}
+
+void instruction_dcp(uint16 address)
+{
+	instruction_dec(address);
+	instruction_cmp(mmu_read(address));
+}
+
+void instruction_isb(uint16 address)
+{
+	instruction_inc(address);
+	instruction_sbc(mmu_read(address));
+}
+
+void instruction_slo(uint16 address)
+{
+	instruction_asl(address);
+	instruction_ora(mmu_read(address));
+}
+
+void instruction_rla(uint16 address)
+{
+	instruction_rol(address);
+	instruction_and(mmu_read(address));
+}
+
+void instruction_sre(uint16 address)
+{
+	instruction_lsr(address);
+	instruction_eor(mmu_read(address));
+}
+
+void instruction_rra(uint16 address)
+{
+	instruction_ror(address);
+	instruction_adc(mmu_read(address));
+}
+
+void instruction_dop(uint8 value)
+{
+}
+
+void instruction_top(uint16 address)
+{
+}

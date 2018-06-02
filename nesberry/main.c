@@ -13,9 +13,12 @@ int main()
 
 	uint32 cycles = 0;
 
-	while (cycles < 15000)
+	uint32 counter = 0;
+
+	while (counter < 8995)
 	{
 		cycles += cpu_step();
+		counter += 1;
 	}
 	return 0;
 }

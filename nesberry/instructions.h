@@ -63,4 +63,15 @@ void instruction_txa();
 void instruction_txs();
 void instruction_tya();
 
-// illegal opcodes
+// undocumented opcodes - http://nesdev.com/undocumented_opcodes.txt
+void instruction_aac(uint8 value);
+void instruction_sax(uint16 address);
+void instruction_lax(uint8 value);
+void instruction_dcp(uint16 address);
+void instruction_isb(uint16 address);
+void instruction_slo(uint16 address);
+void instruction_rla(uint16 address);
+void instruction_sre(uint16 address);
+void instruction_rra(uint16 address);
+void instruction_dop(uint8 value);
+void instruction_top(uint16 address);
