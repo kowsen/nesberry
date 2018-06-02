@@ -1,4 +1,4 @@
-#define PC_START_OVERRIDE 0xC000
+//#define PC_START_OVERRIDE 0xC000
 
 #include "cpu.h"
 #include "registers.h"
@@ -33,7 +33,7 @@ uint8 extra_cycle;
 uint8 cpu_step()
 {
 	uint8 opcode = mmu_read(PC);
-	print_status(opcode);
+	//print_status(opcode);
 	PC += 1;
 	switch (opcode)
 	{

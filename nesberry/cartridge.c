@@ -7,6 +7,11 @@
 
 int cart_init(char* filename)
 {
+	for (uint32 i = 0; i < CART_MAX_RAM_SIZE; i++)
+	{
+		cartridge.prg_ram[i] = 0;
+	}
+
 	for (uint32 i = 0; i < CART_MAX_ROM_SIZE; i++)
 	{
 		cartridge.data[i] = 0;
@@ -32,12 +37,30 @@ int cart_init(char* filename)
 	return CART_INIT_SUCCESS;
 }
 
-inline uint8 cart_get_prg(uint16 address)
+inline uint8 cart_get_cpu(uint16 address)
 {
-	uint16 prg_address = address - 0x8000;
-	if (cartridge.prg_num_pages == 1)
+	if (address >= 0x8000)
 	{
-		prg_address %= PRG_PAGE_SIZE;
+		address -= 0x8000;
+		if (cartridge.prg_num_pages == 1)
+		{
+			address %= PRG_PAGE_SIZE;
+		}
+		return cartridge.data[cartridge.prg_start + address];
 	}
-	return cartridge.data[cartridge.prg_start + prg_address];
+	else if (address >= 0x6000)
+	{
+		address -= 0x6000;
+		return cartridge.prg_ram[address];
+	}
 }
+
+inline void cart_write_cpu(uint16 address, uint8 value)
+{
+	if (address >= 0x6000 && address < 0x8000)
+	{
+		address -= 0x6000;
+		cartridge.prg_ram[address] = value;
+	}
+}
+
